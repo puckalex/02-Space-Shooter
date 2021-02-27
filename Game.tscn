@@ -1,0 +1,113 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Player/Player.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Ship.png" type="Texture" id=2]
+[ext_resource path="res://Gravity/Gravity.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Planet2/Planet2.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Planet1/Planet1.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Assets/Background.png" type="Texture" id=6]
+[ext_resource path="res://Enemy/Enemy.tscn" type="PackedScene" id=7]
+[ext_resource path="res://HUD/HUD.gd" type="Script" id=8]
+[ext_resource path="res://Enemy/Enemies.gd" type="Script" id=9]
+
+[node name="Game" type="Node2D"]
+
+[node name="Background" type="Sprite" parent="."]
+texture = ExtResource( 6 )
+centered = false
+
+[node name="Enemies" type="Node2D" parent="."]
+script = ExtResource( 9 )
+
+[node name="Spawn" type="Timer" parent="Enemies"]
+wait_time = 0.25
+autostart = true
+
+[node name="Enemy" parent="Enemies" instance=ExtResource( 7 )]
+position = Vector2( 500, -15 )
+
+[node name="ELazer" type="Node2D" parent="."]
+
+[node name="Missile" type="Node2D" parent="."]
+
+[node name="PLazer" type="Node2D" parent="."]
+
+[node name="Planet2" type="Node2D" parent="."]
+position = Vector2( 250, 220 )
+
+[node name="Gravity" parent="Planet2" instance=ExtResource( 3 )]
+scale = Vector2( 2, 2 )
+gravity = 352.206
+
+[node name="Planet2" parent="Planet2" instance=ExtResource( 5 )]
+
+[node name="Planet1" type="Node2D" parent="."]
+position = Vector2( 800, 300 )
+
+[node name="Gravity" parent="Planet1" instance=ExtResource( 3 )]
+scale = Vector2( 1.5, 1.5 )
+gravity = 203.567
+
+[node name="Planet1" parent="Planet1" instance=ExtResource( 4 )]
+
+[node name="Player" type="KinematicBody2D" parent="."]
+position = Vector2( 512, 550 )
+collision_layer = 2
+collision_mask = 0
+script = ExtResource( 1 )
+
+[node name="Reload" type="Timer" parent="Player"]
+wait_time = 0.554
+autostart = true
+
+[node name="Sprite" type="Sprite" parent="Player"]
+scale = Vector2( 1.4, 1.4 )
+texture = ExtResource( 2 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Player"]
+scale = Vector2( 1.4, 1.4 )
+polygon = PoolVector2Array( 7, -16.1, 7, -12, 7.3, -10.1, 7.8, -11, 10.8, -11, 14, -7.8, 14, -4.6, 19, 2.4, 19, 12, 17.1, 12, 12.3, 20, 6.6, 20, 5.9, 19, -5, 19, -6.4, 20, -12.2, 20, -15, 18.1, -15, 15.7, -19, 10.7, -19, 1, -17.2, 1, -11.2, -11, -8, -11, -8, -12.7, -3, -18.7, -3, -20, 1.1, -20 )
+
+[node name="Hbar" type="ColorRect" parent="Player"]
+margin_left = -20.0
+margin_top = 30.0
+margin_right = 20.0
+margin_bottom = 35.0
+color = Color( 0.12549, 0.85098, 0.152941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HUD" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="HUD"]
+margin_top = 560.0
+margin_right = 1024.0
+margin_bottom = 600.0
+color = Color( 0, 0, 0, 0.196078 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Label" parent="HUD"]
+margin_left = 10.0
+margin_top = 560.0
+margin_right = 50.0
+margin_bottom = 600.0
+valign = 1
+
+[node name="Health" type="Label" parent="HUD"]
+margin_left = 935.0
+margin_top = 560.0
+margin_right = 1015.0
+margin_bottom = 600.0
+align = 2
+valign = 1
+[connection signal="timeout" from="Enemies/Spawn" to="Enemies" method="_on_Spawn_timeout"]
+[connection signal="timeout" from="Player/Reload" to="Player" method="_on_Reload_timeout"]
